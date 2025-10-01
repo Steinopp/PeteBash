@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/Ball.gd" id="1"]
+
+[node name="Ball" type="RigidBody2D"]
+script = ExtResource("1")
+gravity_scale = 1.0
+linear_damp = 0.0
+angular_damp = 1.0
+mass = 1.0
+physics_material_override = PhysicsMaterial { bounce = 0.75, friction = 0.2 }
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = CircleShape2D { radius = 10 }
+
+[node name="Sprite" type="ColorRect" parent="."]
+position = Vector2(-10, -10)
+size = Vector2(20, 20)
+color = Color(1.0, 1.0, 1.0, 1.0)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10

@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/UI.gd" id="1"]
+
+[node name="UI" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="Margin" type="MarginContainer" parent="."]
+offset_right = 960.0
+offset_bottom = 540.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+offset_right = 928.0
+offset_bottom = 508.0
+custom_minimum_size = Vector2(0, 0)
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox"]
+size_flags_horizontal = 3
+size_flags_vertical = 0
+alignment = 0
+
+[node name="Score" type="Label" parent="Margin/VBox/HBox"]
+text = "Score: 0"
+
+[node name="Balls" type="Label" parent="Margin/VBox/HBox"]
+text = "Balls: 10"
+
+[node name="Orange" type="Label" parent="Margin/VBox/HBox"]
+text = "Orange: 0"
+
+[node name="Message" type="Label" parent="Margin/VBox"]
+text = ""
+autowrap_mode = 2
