@@ -1,3 +1,27 @@
+## =============================================================================
+## File: Ball.gd
+## Purpose: Ball physics + reliable peg hit detection (sensor Area2D) + ricochet behavior.
+## Context: Godot 4.x (GDScript). Documented for quick onboarding (humans + LLMs).
+## Notes:
+##   - This header lists signals, exported tunables, and expected child nodes.
+##   - Function banners summarize role, inputs, and side-effects.
+##   - No logic changes here—only comments for clarity.
+## Updated: 2025-10-01 22:22 UTC
+## =============================================================================
+
+## Summary
+## Signals:
+##   - ball_lost
+##   - ball_caught
+## Exported tunables:
+##   - bounce_factor: float = 0.75
+##   - min_incident_cos: float = 0.20     # ~78° or shallower = “glancing”
+##   - min_bounce_speed: float = 120.0
+##   - direct_bounce_speed_scale: float = 0.60
+##   - max_speed: float = 1400.0
+## Node/scene expectations (accessed with $Path or @onready vars):
+##   (no explicit @onready or $Path usages found)
+
 extends RigidBody2D
 
 signal ball_lost
@@ -14,6 +38,13 @@ signal ball_caught
 @export var direct_bounce_speed_scale: float = 0.60
 # Max speed clamp to avoid tunneling / unstable physics.
 @export var max_speed: float = 1400.0
+
+## ---------------------------------------------------------------------------
+## _ready(-)
+## Role: initialize node state, connect signals, create children as needed
+## Inputs: -
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
 
 func _ready() -> void:
 	add_to_group("ball")
@@ -45,11 +76,25 @@ func _ready() -> void:
 	# Godot 4: pass a Callable to connect()
 	hitbox.body_entered.connect(Callable(self, "_on_hitbox_body_entered"))
 
+## ---------------------------------------------------------------------------
+## _integrate_forces(state: PhysicsDirectBodyState2D)
+## Role: low-level physics callback to clamp velocity or inspect contacts
+## Inputs: state: PhysicsDirectBodyState2D
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
+
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	# Clamp max speed to keep behavior stable
 	var v: Vector2 = linear_velocity
 	if v.length() > max_speed:
 		linear_velocity = v.normalized() * max_speed
+
+## ---------------------------------------------------------------------------
+## _process(_delta: float)
+## Role: per-frame updates (input/aim/labels, non-physics)
+## Inputs: _delta: float
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
 
 func _process(_delta: float) -> void:
 	# If we fall off-screen, end the ball
@@ -58,9 +103,23 @@ func _process(_delta: float) -> void:
 		emit_signal("ball_lost")
 		queue_free()
 
+## ---------------------------------------------------------------------------
+## _on_caught(-)
+## Role: (brief: describe purpose)
+## Inputs: -
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
+
 func _on_caught() -> void:
 	emit_signal("ball_caught")
 	queue_free()
+
+## ---------------------------------------------------------------------------
+## _on_hitbox_body_entered(body: Node)
+## Role: sensor overlap with peg; score + bounce response
+## Inputs: body: Node
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
 
 func _on_hitbox_body_entered(body: Node) -> void:
 	# Only care about pegs (StaticBody2D in group "peg")
@@ -102,5 +161,12 @@ func _on_hitbox_body_entered(body: Node) -> void:
 		linear_velocity = v_out
 
 # Allow Main/UI to tweak gravity on the live ball
+
+## ---------------------------------------------------------------------------
+## set_gravity_scale_custom(value: float)
+## Role: (brief: describe purpose)
+## Inputs: value: float
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
 func set_gravity_scale_custom(value: float) -> void:
 	gravity_scale = value

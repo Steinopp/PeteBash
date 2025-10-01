@@ -1,3 +1,23 @@
+## =============================================================================
+## File: Cannon.gd
+## Purpose: Cannon controller: rotates toward mouse; on click requests a shot from Main.
+## Context: Godot 4.x (GDScript). Documented for quick onboarding (humans + LLMs).
+## Notes:
+##   - This header lists signals, exported tunables, and expected child nodes.
+##   - Function banners summarize role, inputs, and side-effects.
+##   - No logic changes here—only comments for clarity.
+## Updated: 2025-10-01 22:22 UTC
+## =============================================================================
+
+## Summary
+## Signals:
+##   (none)
+## Exported tunables:
+##   - muzzle_speed: float = 1100.0
+## Node/scene expectations (accessed with $Path or @onready vars):
+##   - barrel: Node2D at $Barrel
+##   - muzzle: Marker2D at $Barrel/Muzzle
+
 extends Node2D
 
 @export var muzzle_speed: float = 1100.0
@@ -6,6 +26,13 @@ extends Node2D
 @onready var main: Node = get_tree().current_scene
 
 var can_shoot: bool = true
+
+## ---------------------------------------------------------------------------
+## _process(_delta: float)
+## Role: per-frame updates (input/aim/labels, non-physics)
+## Inputs: _delta: float
+## Side-effects: (state changes, signals, spawns, node edits)
+## ---------------------------------------------------------------------------
 
 func _process(_delta: float) -> void:
 	var mouse_pos: Vector2 = get_global_mouse_position()
